@@ -1,0 +1,25 @@
+﻿using CargoTrack.Entity.Entities;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CargoTrack.DataAccess.Context
+{
+    public class CargoTrackDbContext : DbContext
+    {
+        public CargoTrackDbContext(DbContextOptions options) : base(options)
+        {
+            
+        }
+
+        public DbSet<About> Abouts { get; set; }
+        public DbSet<Branch> Branches { get; set; }
+        public DbSet<Cargo> Cargos { get; set; }
+        public DbSet<City> Cities { get; set; }
+        public DbSet<ContactInfo> ContactInfos { get; set; }
+
+    }
+}
