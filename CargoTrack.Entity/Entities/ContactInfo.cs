@@ -4,8 +4,8 @@ namespace CargoTrack.Entity.Entities
 {
     public class ContactInfo : BaseEntity
     {
-        public string Address { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
+        public virtual string Address { get; set; }
+        public virtual string Email { get; set; }
+        public virtual string PhoneNumber { get; set; }
     }
 }

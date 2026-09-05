@@ -1,0 +1,21 @@
+﻿@model CreateBranchDto
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Yeni Şube Oluştur</h3>
+
+<form method="post">
+    <label>Şube Adı</label>
+    <input type="text" asp-for="Name" class="form-control" />
+    <span class="text-danger" asp-validation-for="Name"></span>
+    <br />
+    <label>Şehir</label>
+    <select asp-for="CityId" class="form-control" asp-items="@ViewBag.Cities">
+        <option disabled selected> --- Şehir Seçiniz --- </option>
+    </select>
+    <span class="text-danger" asp-validation-for="CityId"></span>
+    <br />
+    <button type="submit" class="btn btn-dark">Kaydet</button>
+</form>
