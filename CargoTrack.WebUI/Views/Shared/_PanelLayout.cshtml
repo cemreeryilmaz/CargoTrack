@@ -1,0 +1,120 @@
+@using System.Security.Claims
+@{
+    var rd = ViewContext.RouteData.Values;
+    var area = rd["area"]?.ToString() ?? "";
+    var ctrl = rd["controller"]?.ToString() ?? "";
+    var isManagerArea = string.Equals(area, "Manager", StringComparison.OrdinalIgnoreCase);
+    var panelTitle = isManagerArea ? "Şube Yönetim Paneli" : "Yönetici Paneli";
+    var fullName = User.FindFirstValue(ClaimTypes.GivenName) ?? User.Identity?.Name ?? "Kullanıcı";
+
+    string Active(string c) =>
+        string.Equals(ctrl, c, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CargoTrack</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CargoTrack.WebUI.styles.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <style>
+        :root { --panel-bg: #001e3c; --panel-accent: #fd8b00; }
+        body { background-color: #f3f6fb; }
+        .panel-wrapper { min-height: 100vh; }
+        .panel-sidebar {
+            width: 260px; min-width: 260px; background: var(--panel-bg);
+            color: #cdd7e5; min-height: 100vh; position: sticky; top: 0;
+        }
+        .panel-sidebar .brand {
+            display: flex; align-items: center; gap: .5rem;
+            padding: 1.1rem 1.25rem; color: #fff; font-weight: 700; font-size: 1.15rem;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+        .panel-sidebar .nav-link {
+            color: #cdd7e5; display: flex; align-items: center; gap: .75rem;
+            padding: .7rem 1.25rem; border-left: 3px solid transparent; font-size: .95rem;
+        }
+        .panel-sidebar .nav-link:hover { background: rgba(255,255,255,.06); color: #fff; }
+        .panel-sidebar .nav-link.active {
+            background: rgba(253,139,0,.12); color: #fff; border-left-color: var(--panel-accent);
+        }
+        .panel-sidebar .nav-section {
+            text-transform: uppercase; font-size: .7rem; letter-spacing: .08em;
+            color: #6f87aa; padding: 1rem 1.25rem .4rem;
+        }
+        .panel-topbar {
+            background: #fff; border-bottom: 1px solid #e3e9f2;
+            padding: .75rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
+        }
+        .panel-main { flex: 1 1 auto; min-width: 0; }
+        .material-symbols-outlined { font-size: 20px; }
+        @@media (max-width: 768px) {
+            .panel-sidebar { position: static; width: 100%; min-height: auto; }
+            .panel-wrapper { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="panel-wrapper d-flex">
+        <!-- Sidebar -->
+        <aside class="panel-sidebar">
+            <a href="@(isManagerArea ? "/Manager/Dashboard/Index" : "/Admin/Dashboard/Index")" class="brand text-decoration-none">
+                <span class="material-symbols-outlined">package_2</span>
+                CargoTrack
+            </a>
+            <nav class="nav flex-column py-2">
+                @if (isManagerArea)
+                {
+                    <div class="nav-section">Operasyon</div>
+                    <a class="nav-link @Active("Dashboard")" href="/Manager/Dashboard/Index"><span class="material-symbols-outlined">dashboard</span> Panel</a>
+                    <a class="nav-link @Active("Cargo")" href="/Manager/Cargo/Index"><span class="material-symbols-outlined">inventory_2</span> Şube Kargoları</a>
+                    <a class="nav-link" href="/Manager/Cargo/Distribution"><span class="material-symbols-outlined">local_shipping</span> Dağıtım Listesi</a>
+                }
+                else
+                {
+                    <div class="nav-section">Genel</div>
+                    <a class="nav-link @Active("Dashboard")" href="/Admin/Dashboard/Index"><span class="material-symbols-outlined">dashboard</span> Panel</a>
+                    <a class="nav-link @Active("Report")" href="/Admin/Report/Index"><span class="material-symbols-outlined">monitoring</span> Raporlar</a>
+
+                    <div class="nav-section">Operasyon</div>
+                    <a class="nav-link @Active("Cargo")" href="/Admin/Cargo/Index"><span class="material-symbols-outlined">inventory_2</span> Kargolar</a>
+                    <a class="nav-link @Active("Branch")" href="/Admin/Branch/Index"><span class="material-symbols-outlined">store</span> Şubeler</a>
+                    <a class="nav-link @Active("TransferCenter")" href="/Admin/TransferCenter/Index"><span class="material-symbols-outlined">swap_horiz</span> Transfer Merkezleri</a>
+                    <a class="nav-link @Active("Employee")" href="/Admin/Employee/Index"><span class="material-symbols-outlined">badge</span> Personeller</a>
+                    <a class="nav-link @Active("CargoPrice")" href="/Admin/CargoPrice/Index"><span class="material-symbols-outlined">payments</span> Fiyat Kuralları</a>
+
+                    <div class="nav-section">Yönetim</div>
+                    <a class="nav-link @Active("RoleAssign")" href="/Admin/RoleAssign/Index"><span class="material-symbols-outlined">manage_accounts</span> Kullanıcı & Rol</a>
+                    <a class="nav-link @Active("AuditLog")" href="/Admin/AuditLog/Index"><span class="material-symbols-outlined">history</span> Denetim Kayıtları</a>
+                    <a class="nav-link @Active("About")" href="/Admin/About/Index"><span class="material-symbols-outlined">info</span> Hakkımızda İçeriği</a>
+                }
+                <div class="nav-section">Hesap</div>
+                <a class="nav-link" href="/Default/Index"><span class="material-symbols-outlined">public</span> Siteye Dön</a>
+                <a class="nav-link" href="/Login/Logout"><span class="material-symbols-outlined">logout</span> Çıkış Yap</a>
+            </nav>
+        </aside>
+
+        <!-- Main -->
+        <div class="panel-main d-flex flex-column">
+            <div class="panel-topbar">
+                <h5 class="mb-0 fw-semibold text-dark">@panelTitle</h5>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="text-secondary small"><span class="material-symbols-outlined align-middle">account_circle</span> @fullName</span>
+                    <a href="/Login/Logout" class="btn btn-outline-secondary btn-sm">Çıkış</a>
+                </div>
+            </div>
+            <main class="p-4">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

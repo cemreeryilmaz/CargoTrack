@@ -1,0 +1,10 @@
+@{
+    ViewData["Title"] = "Panelim";
+}
+
+<div class="mb-stack-lg">
+    <h1 class="font-headline-lg text-headline-lg text-on-background mb-2">Merhaba 👋</h1>
+    <p class="font-body-md text-on-surface-variant">Kargolarınızın güncel durumunu buradan takip edebilirsiniz.</p>
+</div>
+
+@await Component.InvokeAsync("UserDashboard")

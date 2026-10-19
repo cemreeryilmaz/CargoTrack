@@ -1,0 +1,34 @@
+@model ConfirmDeliveryDto
+@{
+    ViewData["Title"] = "Teslimat Doğrulama";
+    var cargo = ViewBag.Cargo as CargoDetailDto;
+}
+
+<h3 class="mb-3">Teslimat Kodu Doğrulama</h3>
+
+@if (cargo != null)
+{
+    <div class="alert alert-info">
+        <strong>@cargo.TrackCode</strong> — Alıcı: @cargo.ReceiverFullName
+        <br />
+        <small class="text-muted">Teslim için alıcıdaki 6 haneli kodu giriniz.</small>
+    </div>
+}
+
+<form method="post" style="max-width:420px">
+    <input type="hidden" asp-for="CargoId" />
+    <div class="mb-3">
+        <label class="form-label">Teslimat Kodu</label>
+        <input asp-for="DeliveryCode" class="form-control" maxlength="6" placeholder="6 haneli kod" />
+        <span asp-validation-for="DeliveryCode" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Teslim Alan Kişi</label>
+        <input asp-for="ReceivedByName" class="form-control" />
+        <span asp-validation-for="ReceivedByName" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-success">Teslimatı Onayla</button>
+    <a href="/Manager/Cargo/Detail/@Model.CargoId" class="btn btn-secondary">Vazgeç</a>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -1,0 +1,84 @@
+@using CargoTrack.DTO.DTOs.BranchDtos
+@model List<ResultBranchDto>
+@{
+    ViewData["Title"] = "Şubelerimiz";
+    Layout = "~/Views/UILayout/Index.cshtml";
+
+    var groups = Model
+        .GroupBy(b => b.City?.Name ?? "Diğer")
+        .OrderBy(g => g.Key)
+        .ToList();
+}
+
+<!-- Header -->
+<div class="text-center mb-stack-lg">
+    <h1 class="font-headline-xl text-headline-xl text-on-background mb-4">Şubelerimiz</h1>
+    <p class="font-body-lg text-body-lg text-on-surface-variant">
+        Türkiye genelinde <strong class="text-primary">@Model.Count</strong> şube ile @groups.Count ilde hizmetinizdeyiz.
+    </p>
+</div>
+
+<!-- Arama -->
+<div class="max-w-xl mx-auto mb-stack-lg">
+    <div class="relative">
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+        <input id="branchSearch" type="text" placeholder="İl veya şube adı ara..."
+               class="w-full border border-outline-variant rounded-DEFAULT pl-12 pr-4 py-3 font-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-surface-bright h-[48px]" />
+    </div>
+</div>
+
+<!-- Şehir kartları -->
+<div id="branchGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+    @foreach (var group in groups)
+    {
+        <div class="branch-card bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col"
+             data-city="@group.Key.ToLower()">
+            <div class="bg-surface-container-low px-5 py-4 flex items-center justify-between border-b border-outline-variant">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">location_city</span>
+                    <h3 class="font-headline-md text-lg font-bold text-on-background">@group.Key</h3>
+                </div>
+                <span class="bg-primary-fixed text-primary-container text-status-label font-status-label px-2.5 py-1 rounded-full">@group.Count() şube</span>
+            </div>
+            <ul class="p-5 flex flex-col gap-3 flex-grow">
+                @foreach (var branch in group.OrderBy(b => b.Name))
+                {
+                    <li class="branch-item flex items-center gap-3 text-on-surface-variant" data-name="@branch.Name.ToLower()">
+                        <span class="material-symbols-outlined text-[18px] text-secondary">store</span>
+                        <span class="font-body-md text-body-md">@branch.Name</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</div>
+
+<div id="noResult" class="hidden text-center text-on-surface-variant py-10">
+    Aramanızla eşleşen şube bulunamadı.
+</div>
+
+<script>
+    (function () {
+        const input = document.getElementById('branchSearch');
+        const cards = Array.from(document.querySelectorAll('.branch-card'));
+        const noResult = document.getElementById('noResult');
+        input.addEventListener('input', function () {
+            const q = this.value.trim().toLowerCase();
+            let visible = 0;
+            cards.forEach(card => {
+                const city = card.getAttribute('data-city');
+                const items = Array.from(card.querySelectorAll('.branch-item'));
+                let anyItem = false;
+                items.forEach(li => {
+                    const match = !q || li.getAttribute('data-name').includes(q) || city.includes(q);
+                    li.style.display = match ? '' : 'none';
+                    if (match) anyItem = true;
+                });
+                const show = !q || city.includes(q) || anyItem;
+                card.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+            noResult.classList.toggle('hidden', visible > 0);
+        });
+    })();
+</script>

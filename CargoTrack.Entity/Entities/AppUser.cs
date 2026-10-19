@@ -7,11 +7,15 @@ namespace CargoTrack.Entity.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        // Navigation properties
+        // Manager / Employee kullanıcıları için bağlı olduğu şube (rol bazlı veri filtreleme)
+        public Guid? BranchId { get; set; }
 
+        public string FullName => string.Join(" ", FirstName, LastName);
+
+        // Navigation properties
+        public virtual Branch Branch { get; set; }
         public virtual IList<Cargo> SentCargos { get; set; }
         public virtual IList<Cargo> ReceivedCargos { get; set; }
         public virtual IList<Address> Addresses { get; set; }
-
     }
 }

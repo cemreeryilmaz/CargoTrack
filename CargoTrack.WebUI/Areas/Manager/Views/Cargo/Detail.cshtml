@@ -1,0 +1,19 @@
+@model CargoDetailDto
+@{
+    ViewData["Title"] = "Kargo Detayı";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">Kargo Detayı</h3>
+    <div>
+        <a href="/Manager/Cargo/NewMovement/@Model.Id" class="btn btn-primary">Yeni Hareket</a>
+        @if (Model.CargoStatus == CargoStatus.OutForDelivery)
+        {
+            <a href="/Manager/Cargo/ConfirmDelivery/@Model.Id" class="btn btn-success">Teslim Et</a>
+            <a href="/Manager/Cargo/ReportException/@Model.Id" class="btn btn-warning">Sorun Bildir</a>
+        }
+        <a href="/Manager/Cargo/Index" class="btn btn-secondary">Listeye Dön</a>
+    </div>
+</div>
+
+<partial name="_CargoDetailPartial" model="Model" />

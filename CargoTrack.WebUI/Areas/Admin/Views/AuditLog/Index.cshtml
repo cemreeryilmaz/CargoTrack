@@ -1,0 +1,45 @@
+@model PagedResult<ResultAuditLogDto>
+@{
+    ViewData["Title"] = "Denetim Kayıtları";
+}
+
+<h3 class="mb-3">Denetim Kayıtları (Audit Log)</h3>
+
+<table class="table table-sm table-bordered table-hover">
+    <thead class="table-light">
+        <tr>
+            <th>Tarih</th><th>Kullanıcı</th><th>İşlem</th><th>Entity</th>
+            <th>Açıklama</th><th>Eski Değer</th><th>Yeni Değer</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var a in Model.Items)
+        {
+            <tr>
+                <td>@a.ActionDate.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>@a.UserName</td>
+                <td><span class="badge bg-info text-dark">@a.ActionTypeName</span></td>
+                <td>@a.EntityName</td>
+                <td>@a.Description</td>
+                <td>@a.OldValue</td>
+                <td>@a.NewValue</td>
+            </tr>
+        }
+        @if (!Model.Items.Any())
+        {
+            <tr><td colspan="7" class="text-center text-muted">Kayıt bulunamadı.</td></tr>
+        }
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination">
+        <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+            <a class="page-link" href="/Admin/AuditLog/Index?page=@(Model.Page - 1)">Önceki</a>
+        </li>
+        <li class="page-item disabled"><span class="page-link">@Model.Page / @(Model.TotalPages == 0 ? 1 : Model.TotalPages)</span></li>
+        <li class="page-item @(Model.HasNext ? "" : "disabled")">
+            <a class="page-link" href="/Admin/AuditLog/Index?page=@(Model.Page + 1)">Sonraki</a>
+        </li>
+    </ul>
+</nav>

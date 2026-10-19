@@ -1,0 +1,103 @@
+@model AdminDashboardDto
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card text-bg-primary shadow-sm"><div class="card-body">
+            <h6 class="card-title">Toplam Kargo</h6>
+            <h2 class="mb-0">@Model.TotalCargoCount</h2>
+        </div></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-info shadow-sm"><div class="card-body">
+            <h6 class="card-title">Aktif Kargo</h6>
+            <h2 class="mb-0">@Model.ActiveCargoCount</h2>
+        </div></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-danger shadow-sm"><div class="card-body">
+            <h6 class="card-title">Geciken Kargo</h6>
+            <h2 class="mb-0">@Model.DelayedCargoCount</h2>
+        </div></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-success shadow-sm"><div class="card-body">
+            <h6 class="card-title">Teslimat Oranı</h6>
+            <h2 class="mb-0">%@Model.DeliveryRate</h2>
+        </div></div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm"><div class="card-body text-center">
+            <h6 class="text-muted">Aktif Şube</h6>
+            <h3>@Model.ActiveBranchCount</h3>
+        </div></div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm"><div class="card-body text-center">
+            <h6 class="text-muted">Aktif Personel</h6>
+            <h3>@Model.ActiveEmployeeCount</h3>
+        </div></div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm"><div class="card-body text-center">
+            <h6 class="text-muted">Toplam Kullanıcı</h6>
+            <h3>@Model.UserCount</h3>
+        </div></div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card shadow-sm"><div class="card-body">
+            <h6 class="card-title">Son 7 Günlük Trafik</h6>
+            <table class="table table-sm mb-0">
+                @foreach (var p in Model.Last7DaysTraffic)
+                {
+                    <tr><td>@p.Label</td><td class="text-end fw-bold">@p.Value</td></tr>
+                }
+            </table>
+        </div></div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm"><div class="card-body">
+            <h6 class="card-title">Durum Dağılımı</h6>
+            <table class="table table-sm mb-0">
+                @foreach (var p in Model.StatusDistribution)
+                {
+                    <tr><td>@p.Label</td><td class="text-end fw-bold">@p.Value</td></tr>
+                }
+            </table>
+        </div></div>
+    </div>
+</div>
+
+<div class="row g-3 mt-1">
+    <div class="col-md-6">
+        <div class="card shadow-sm"><div class="card-body">
+            <h6 class="card-title">En Yoğun 5 Şube</h6>
+            <table class="table table-sm mb-0">
+                @foreach (var p in Model.Top5BusiestBranches)
+                {
+                    <tr><td>@p.Label</td><td class="text-end fw-bold">@p.Value</td></tr>
+                }
+            </table>
+        </div></div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm"><div class="card-body">
+            <h6 class="card-title">Son Eklenen Kargolar</h6>
+            <table class="table table-sm mb-0">
+                <thead><tr><th>Takip No</th><th>Durum</th></tr></thead>
+                @foreach (var c in Model.RecentCargos)
+                {
+                    <tr>
+                        <td><a href="/Admin/Cargo/Detail/@c.Id">@c.TrackCode</a></td>
+                        <td>@c.CargoStatusName</td>
+                    </tr>
+                }
+            </table>
+        </div></div>
+    </div>
+</div>

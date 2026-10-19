@@ -1,0 +1,97 @@
+@model CargoDetailDto
+
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h4 class="mb-1">@Model.TrackCode</h4>
+                <span class="badge bg-secondary">@Model.CargoStatusName</span>
+                @if (Model.IsDelayed)
+                {
+                    <span class="badge bg-danger">Gecikmiş</span>
+                }
+            </div>
+            <div class="text-end">
+                <div class="text-muted small">Ücret</div>
+                <h4>@Model.Price.ToString("N2") ₺</h4>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Gönderici:</strong> @Model.SenderFullName</p>
+                <p><strong>Çıkış:</strong> @Model.OriginCityName / @Model.OriginBranchName</p>
+                <p><strong>Gönderim Tarihi:</strong> @Model.ShipmentDate.ToString("dd.MM.yyyy HH:mm")</p>
+                <p><strong>Kargo Tipi:</strong> @Model.CargoTypeName</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Alıcı:</strong> @Model.ReceiverFullName</p>
+                <p><strong>Varış:</strong> @Model.DestinationCityName / @Model.DestinationBranchName</p>
+                <p><strong>Tahmini Teslimat:</strong> @Model.EstimatedArrivalDate.ToString("dd.MM.yyyy")</p>
+                <p><strong>Teslimat Tipi:</strong> @Model.DeliveryTypeName</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3"><strong>Ağırlık:</strong> @Model.Weight kg</div>
+            <div class="col-md-3"><strong>Desi:</strong> @Model.Desi</div>
+            <div class="col-md-3"><strong>Ölçüler:</strong> @Model.Width×@Model.Length×@Model.Height cm</div>
+            <div class="col-md-3"><strong>Başarısız Deneme:</strong> @Model.FailedAttemptCount</div>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.DeliveredToName))
+        {
+            <div class="alert alert-success mt-3 mb-0">
+                <strong>Teslim Alan:</strong> @Model.DeliveredToName (@Model.DeliveredDate?.ToString("dd.MM.yyyy HH:mm"))
+            </div>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-7">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header">Kargo Hareketleri</div>
+            <ul class="list-group list-group-flush">
+                @foreach (var m in Model.Movements)
+                {
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <strong>@m.NewStatusName</strong>
+                            <span class="text-muted small">@m.MovementDate.ToString("dd.MM.yyyy HH:mm")</span>
+                        </div>
+                        <div class="small text-muted">@m.Description</div>
+                        @if (!string.IsNullOrEmpty(m.LocationName))
+                        {
+                            <div class="small">📍 @m.LocationName @(string.IsNullOrEmpty(m.EmployeeName) ? "" : $"• {m.EmployeeName}")</div>
+                        }
+                    </li>
+                }
+                @if (!Model.Movements.Any())
+                {
+                    <li class="list-group-item text-muted">Hareket kaydı yok.</li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header">Sorunlu Kargo Kayıtları</div>
+            <ul class="list-group list-group-flush">
+                @foreach (var e in Model.Exceptions)
+                {
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <strong class="text-danger">@e.ReasonName</strong>
+                            <span class="badge bg-dark">@e.AttemptNumber. deneme</span>
+                        </div>
+                        <div class="small text-muted">@e.Description</div>
+                        <div class="small">@e.ExceptionDate.ToString("dd.MM.yyyy HH:mm")</div>
+                    </li>
+                }
+                @if (!Model.Exceptions.Any())
+                {
+                    <li class="list-group-item text-muted">Sorun kaydı yok.</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

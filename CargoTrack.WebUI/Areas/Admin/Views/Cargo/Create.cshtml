@@ -1,0 +1,81 @@
+@model CreateCargoDto
+@{
+    ViewData["Title"] = "Yeni Kargo";
+}
+
+<h3 class="mb-3">Yeni Kargo Oluştur</h3>
+
+<form method="post" class="row g-3">
+    <div class="col-md-6">
+        <label class="form-label">Gönderici</label>
+        <select asp-for="SenderId" class="form-select" asp-items="@ViewBag.Users">
+            <option value="">-- Gönderici Seçiniz --</option>
+        </select>
+        <span asp-validation-for="SenderId" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Alıcı</label>
+        <select asp-for="ReceiverId" class="form-select" asp-items="@ViewBag.Users">
+            <option value="">-- Alıcı Seçiniz --</option>
+        </select>
+        <span asp-validation-for="ReceiverId" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Gönderici Şube</label>
+        <select asp-for="OriginBranchId" class="form-select" asp-items="@ViewBag.Branches">
+            <option value="">-- Şube Seçiniz --</option>
+        </select>
+        <span asp-validation-for="OriginBranchId" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Varış Şube</label>
+        <select asp-for="DestinationBranchId" class="form-select" asp-items="@ViewBag.Branches">
+            <option value="">-- Şube Seçiniz --</option>
+        </select>
+        <span asp-validation-for="DestinationBranchId" class="text-danger"></span>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Ağırlık (kg)</label>
+        <input asp-for="Weight" type="number" step="0.01" class="form-control" />
+        <span asp-validation-for="Weight" class="text-danger"></span>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">En (cm)</label>
+        <input asp-for="Width" type="number" step="0.1" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Boy (cm)</label>
+        <input asp-for="Length" type="number" step="0.1" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Yükseklik (cm)</label>
+        <input asp-for="Height" type="number" step="0.1" class="form-control" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Kargo Tipi</label>
+        <select asp-for="CargoType" class="form-select">
+            @foreach (CargoType t in Enum.GetValues(typeof(CargoType)))
+            {
+                <option value="@((int)t)">@t.GetDisplayName()</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Teslimat Tipi</label>
+        <select asp-for="DeliveryType" class="form-select">
+            @foreach (DeliveryType d in Enum.GetValues(typeof(DeliveryType)))
+            {
+                <option value="@((int)d)">@d.GetDisplayName()</option>
+            }
+        </select>
+    </div>
+    <div class="col-12">
+        <div class="alert alert-info">Desi, ücret ve tahmini teslimat tarihi sistem tarafından otomatik hesaplanır.</div>
+        <button type="submit" class="btn btn-dark">Kaydet</button>
+        <a href="/Admin/Cargo/Index" class="btn btn-secondary">Vazgeç</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,59 @@
+@model PagedResult<ResultCargoDto>
+@{
+    ViewData["Title"] = "Kargolarım";
+    var filter = ViewBag.Filter as CargoFilterDto ?? new CargoFilterDto();
+}
+
+<div class="mb-stack-lg">
+    <h1 class="font-headline-lg text-headline-lg text-on-background mb-2">Kargolarım</h1>
+    <p class="font-body-md text-on-surface-variant">Gönderdiğiniz ve size gelen tüm kargolar.</p>
+</div>
+
+<form method="get" class="flex gap-3 mb-6">
+    <input type="text" name="Search" value="@filter.Search" placeholder="Takip No ara..."
+           class="flex-grow border border-outline-variant rounded-DEFAULT px-4 py-2.5 bg-white focus:outline-none focus:border-primary" />
+    <button type="submit" class="bg-secondary-container text-on-primary px-6 py-2.5 rounded-DEFAULT font-semibold">Ara</button>
+</form>
+
+<div class="flex flex-col gap-4">
+    @foreach (var c in Model.Items)
+    {
+        <a href="/User/Cargo/Detail/@c.Id" class="bg-white rounded-lg border border-outline-variant p-5 flex justify-between items-center hover:shadow-sm transition-shadow">
+            <div>
+                <div class="flex items-center gap-3 mb-1">
+                    <span class="font-body-md font-bold text-on-background">@c.TrackCode</span>
+                    <span class="bg-surface-container-high text-primary-container px-2 py-1 rounded-full font-status-label text-status-label">@c.CargoStatusName</span>
+                    @if (c.IsDelayed)
+                    {
+                        <span class="bg-[#ffdad6] text-[#ba1a1a] px-2 py-1 rounded-full font-status-label text-status-label">Gecikmiş</span>
+                    }
+                </div>
+                <div class="flex items-center gap-2 text-on-surface-variant text-sm">
+                    <span>@c.OriginBranchName</span>
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    <span>@c.DestinationBranchName</span>
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="text-on-surface-variant text-xs mb-1">Tahmini Teslimat</div>
+                <div class="font-semibold text-on-background">@c.EstimatedArrivalDate.ToString("dd MMM yyyy")</div>
+            </div>
+        </a>
+    }
+    @if (!Model.Items.Any())
+    {
+        <div class="bg-white rounded-lg border border-outline-variant p-5 text-on-surface-variant">Kargo bulunamadı.</div>
+    }
+</div>
+
+<div class="flex justify-center gap-2 mt-6">
+    @if (Model.HasPrevious)
+    {
+        <a href="/User/Cargo/Index?Page=@(Model.Page - 1)&Search=@filter.Search" class="px-4 py-2 border border-outline-variant rounded-DEFAULT bg-white">Önceki</a>
+    }
+    <span class="px-4 py-2">@Model.Page / @(Model.TotalPages == 0 ? 1 : Model.TotalPages)</span>
+    @if (Model.HasNext)
+    {
+        <a href="/User/Cargo/Index?Page=@(Model.Page + 1)&Search=@filter.Search" class="px-4 py-2 border border-outline-variant rounded-DEFAULT bg-white">Sonraki</a>
+    }
+</div>

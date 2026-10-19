@@ -1,0 +1,83 @@
+@model PagedResult<ResultCargoDto>
+@{
+    ViewData["Title"] = "Şube Kargoları";
+    var filter = ViewBag.Filter as CargoFilterDto ?? new CargoFilterDto();
+    var noBranch = ViewBag.NoBranch as bool? ?? false;
+}
+
+<h3 class="mb-3">Şube Kargoları</h3>
+
+@if (noBranch)
+{
+    <div class="alert alert-warning">Hesabınıza bir şube atanmamış.</div>
+}
+else
+{
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-5">
+            <input type="text" name="Search" value="@filter.Search" class="form-control" placeholder="Takip No ara..." />
+        </div>
+        <div class="col-md-4">
+            <select name="Status" class="form-select">
+                <option value="">-- Tüm Durumlar --</option>
+                @foreach (CargoStatus s in Enum.GetValues(typeof(CargoStatus)))
+                {
+                    if (filter.Status == s)
+                    {
+                        <option value="@((int)s)" selected>@s.GetDisplayName()</option>
+                    }
+                    else
+                    {
+                        <option value="@((int)s)">@s.GetDisplayName()</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-3 d-grid">
+            <button type="submit" class="btn btn-primary">Filtrele</button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+            <tr><th>Takip No</th><th>Rota</th><th>Durum</th><th>Tahmini</th><th>İşlemler</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model.Items)
+            {
+                <tr>
+                    <td>@c.TrackCode</td>
+                    <td>@c.OriginBranchName → @c.DestinationBranchName</td>
+                    <td>
+                        <span class="badge bg-secondary">@c.CargoStatusName</span>
+                        @if (c.IsDelayed)
+                        {
+                            <span class="badge bg-danger">Gecikmiş</span>
+                        }
+                    </td>
+                    <td>@c.EstimatedArrivalDate.ToString("dd.MM.yyyy")</td>
+                    <td>
+                        <a href="/Manager/Cargo/Detail/@c.Id" class="btn btn-info btn-sm">Detay</a>
+                        <a href="/Manager/Cargo/NewMovement/@c.Id" class="btn btn-primary btn-sm">Hareket</a>
+                    </td>
+                </tr>
+            }
+            @if (!Model.Items.Any())
+            {
+                <tr><td colspan="5" class="text-center text-muted">Kayıt bulunamadı.</td></tr>
+            }
+        </tbody>
+    </table>
+
+    <nav>
+        <ul class="pagination">
+            <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+                <a class="page-link" href="/Manager/Cargo/Index?Page=@(Model.Page - 1)&Search=@filter.Search">Önceki</a>
+            </li>
+            <li class="page-item disabled"><span class="page-link">@Model.Page / @(Model.TotalPages == 0 ? 1 : Model.TotalPages)</span></li>
+            <li class="page-item @(Model.HasNext ? "" : "disabled")">
+                <a class="page-link" href="/Manager/Cargo/Index?Page=@(Model.Page + 1)&Search=@filter.Search">Sonraki</a>
+            </li>
+        </ul>
+    </nav>
+}

@@ -1,0 +1,36 @@
+@model ChangeCargoStatusDto
+@{
+    ViewData["Title"] = "Yeni Hareket";
+    var cargo = ViewBag.Cargo as CargoDetailDto;
+}
+
+<h3 class="mb-3">Yeni Hareket Girişi</h3>
+
+@if (cargo != null)
+{
+    <div class="alert alert-info">
+        <strong>@cargo.TrackCode</strong> — Mevcut Durum: <span class="badge bg-secondary">@cargo.CargoStatusName</span>
+    </div>
+}
+
+<form method="post" style="max-width:560px">
+    <input type="hidden" asp-for="CargoId" />
+    <div class="mb-3">
+        <label class="form-label">Yeni Durum</label>
+        <select asp-for="NewStatus" class="form-select" asp-items="@ViewBag.NextStatuses">
+            <option value="">-- Durum Seçiniz --</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Transfer Merkezi (opsiyonel)</label>
+        <select asp-for="TransferCenterId" class="form-select" asp-items="@ViewBag.TransferCenters">
+            <option value="">-- Transfer Merkezi --</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Açıklama</label>
+        <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+    </div>
+    <button type="submit" class="btn btn-dark">Hareketi Kaydet</button>
+    <a href="/Manager/Cargo/Detail/@Model.CargoId" class="btn btn-secondary">Vazgeç</a>
+</form>

@@ -1,0 +1,30 @@
+@model PagedResult<ResultCargoDto>
+@{
+    ViewData["Title"] = "Dağıtım Listesi";
+}
+
+<h3 class="mb-3">Dağıtım Listesi</h3>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-light">
+        <tr><th>Takip No</th><th>Alıcı</th><th>Rota</th><th>İşlemler</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model.Items)
+        {
+            <tr>
+                <td>@c.TrackCode</td>
+                <td>@c.ReceiverFullName</td>
+                <td>@c.OriginBranchName → @c.DestinationBranchName</td>
+                <td>
+                    <a href="/Manager/Cargo/ConfirmDelivery/@c.Id" class="btn btn-success btn-sm">Teslim Et</a>
+                    <a href="/Manager/Cargo/ReportException/@c.Id" class="btn btn-warning btn-sm">Sorun Bildir</a>
+                </td>
+            </tr>
+        }
+        @if (!Model.Items.Any())
+        {
+            <tr><td colspan="4" class="text-center text-muted">Dağıtımda kargo yok.</td></tr>
+        }
+    </tbody>
+</table>

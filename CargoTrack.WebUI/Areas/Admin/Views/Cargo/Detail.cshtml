@@ -1,0 +1,11 @@
+@model CargoDetailDto
+@{
+    ViewData["Title"] = "Kargo Detayı";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">Kargo Detayı</h3>
+    <a href="/Admin/Cargo/Index" class="btn btn-secondary">Listeye Dön</a>
+</div>
+
+<partial name="_CargoDetailPartial" model="Model" />

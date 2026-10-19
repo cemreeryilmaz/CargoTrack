@@ -1,0 +1,30 @@
+@model CreateDeliveryExceptionDto
+@{
+    ViewData["Title"] = "Sorun Bildir";
+    var cargo = ViewBag.Cargo as CargoDetailDto;
+}
+
+<h3 class="mb-3">Sorunlu Kargo / Başarısız Teslimat</h3>
+
+@if (cargo != null)
+{
+    <div class="alert alert-warning">
+        <strong>@cargo.TrackCode</strong> — Başarısız Deneme: @cargo.FailedAttemptCount
+        <br />
+        <small class="text-muted">3. başarısız denemede kargo otomatik olarak iade sürecine alınır.</small>
+    </div>
+}
+
+<form method="post" style="max-width:480px">
+    <input type="hidden" asp-for="CargoId" />
+    <div class="mb-3">
+        <label class="form-label">Neden</label>
+        <select asp-for="Reason" class="form-select" asp-items="@ViewBag.Reasons"></select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Açıklama</label>
+        <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+    </div>
+    <button type="submit" class="btn btn-warning">Kaydet</button>
+    <a href="/Manager/Cargo/Detail/@Model.CargoId" class="btn btn-secondary">Vazgeç</a>
+</form>

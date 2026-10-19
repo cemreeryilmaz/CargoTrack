@@ -1,0 +1,51 @@
+@model CreateCargoPriceDto
+@{
+    ViewData["Title"] = "Yeni Fiyat Kuralı";
+}
+
+<h3 class="mb-3">Yeni Fiyat Kuralı</h3>
+
+<form method="post" style="max-width:560px">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Ad</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Teslimat Tipi</label>
+            <select asp-for="DeliveryType" class="form-select">
+                @foreach (DeliveryType d in Enum.GetValues(typeof(DeliveryType)))
+                {
+                    <option value="@((int)d)">@d.GetDisplayName()</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Taban Ücret</label>
+            <input asp-for="BasePrice" type="number" step="0.01" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Kg Ücreti</label>
+            <input asp-for="PricePerKg" type="number" step="0.01" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Desi Ücreti</label>
+            <input asp-for="PricePerDesi" type="number" step="0.01" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Şehir Farkı</label>
+            <input asp-for="DifferentCityFee" type="number" step="0.01" class="form-control" />
+        </div>
+        <div class="col-12 form-check ms-2">
+            <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+            <label class="form-check-label">Aktif</label>
+        </div>
+    </div>
+    <div class="mt-3">
+        <button type="submit" class="btn btn-dark">Kaydet</button>
+        <a href="/Admin/CargoPrice/Index" class="btn btn-secondary">Vazgeç</a>
+    </div>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

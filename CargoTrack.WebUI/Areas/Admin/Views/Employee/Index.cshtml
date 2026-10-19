@@ -1,0 +1,42 @@
+@model List<ResultEmployeeDto>
+@{
+    ViewData["Title"] = "Personeller";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">Personeller</h3>
+    <a href="/Admin/Employee/Create" class="btn btn-dark">Yeni Personel</a>
+</div>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-light">
+        <tr><th>#</th><th>Ad Soyad</th><th>Unvan</th><th>Şube</th><th>Durum</th><th>İşlemler</th></tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var e in Model)
+        {
+            i++;
+            <tr>
+                <td>@i</td>
+                <td>@e.FullName</td>
+                <td>@e.Title</td>
+                <td>@e.BranchName</td>
+                <td>
+                    @if (e.IsActive)
+                    {
+                        <span class="badge bg-success">Aktif</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Pasif</span>
+                    }
+                </td>
+                <td>
+                    <a href="/Admin/Employee/Update/@e.Id" class="btn btn-warning btn-sm">Düzenle</a>
+                    <a href="/Admin/Employee/Delete/@e.Id" onclick="return confirm('Emin misiniz?')" class="btn btn-danger btn-sm">Sil</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

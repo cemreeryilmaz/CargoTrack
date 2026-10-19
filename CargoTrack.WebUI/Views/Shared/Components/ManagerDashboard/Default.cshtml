@@ -1,0 +1,63 @@
+@model ManagerDashboardDto
+
+@if (Model.BranchName == "-")
+{
+    <div class="alert alert-warning">Hesabınıza henüz bir şube atanmamış. Lütfen yönetici ile iletişime geçin.</div>
+}
+else
+{
+<h5 class="text-muted mb-3">Şube: <strong>@Model.BranchName</strong></h5>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-2"><div class="card text-bg-primary shadow-sm"><div class="card-body text-center"><h6>Bugün Gelen</h6><h3>@Model.TodayIncomingCount</h3></div></div></div>
+    <div class="col-md-2"><div class="card text-bg-info shadow-sm"><div class="card-body text-center"><h6>Bugün Çıkan</h6><h3>@Model.TodayOutgoingCount</h3></div></div></div>
+    <div class="col-md-2"><div class="card text-bg-secondary shadow-sm"><div class="card-body text-center"><h6>Dağıtımda</h6><h3>@Model.InDistributionCount</h3></div></div></div>
+    <div class="col-md-2"><div class="card text-bg-success shadow-sm"><div class="card-body text-center"><h6>Teslim</h6><h3>@Model.DeliveredCount</h3></div></div></div>
+    <div class="col-md-2"><div class="card text-bg-danger shadow-sm"><div class="card-body text-center"><h6>Geciken</h6><h3>@Model.DelayedCount</h3></div></div></div>
+    <div class="col-md-2"><div class="card text-bg-warning shadow-sm"><div class="card-body text-center"><h6>Sorunlu</h6><h3>@Model.ProblematicCount</h3></div></div></div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-7">
+        <div class="card shadow-sm"><div class="card-header">Dağıtım Listesi</div>
+            <table class="table table-sm mb-0">
+                <thead><tr><th>Takip No</th><th>Alıcı</th><th>İşlem</th></tr></thead>
+                <tbody>
+                    @foreach (var c in Model.DistributionList)
+                    {
+                        <tr>
+                            <td>@c.TrackCode</td>
+                            <td>@c.ReceiverFullName</td>
+                            <td><a href="/Manager/Cargo/ConfirmDelivery/@c.Id" class="btn btn-success btn-sm">Teslim Et</a></td>
+                        </tr>
+                    }
+                    @if (!Model.DistributionList.Any())
+                    {
+                        <tr><td colspan="3" class="text-muted text-center">Dağıtımda kargo yok.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="card shadow-sm"><div class="card-header">Son Hareketler</div>
+            <ul class="list-group list-group-flush">
+                @foreach (var m in Model.RecentMovements)
+                {
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <strong>@m.NewStatusName</strong>
+                            <span class="small text-muted">@m.MovementDate.ToString("dd.MM HH:mm")</span>
+                        </div>
+                        <div class="small text-muted">@m.Description</div>
+                    </li>
+                }
+                @if (!Model.RecentMovements.Any())
+                {
+                    <li class="list-group-item text-muted">Hareket kaydı yok.</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+}

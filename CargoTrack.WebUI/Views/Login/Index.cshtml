@@ -1,0 +1,19 @@
+﻿@model LoginUserDto
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int count = 0;
+}
+
+<h3>Giriş Sayfası</h3>
+
+<form method="post">
+    <label>Kullanıcı Adı</label>
+    <input type="text" asp-for="UserName" class="form-control" required />
+    <br />
+    <label>Şifre</label>
+    <input type="password" asp-for="Password" class="form-control" required />
+    <br />
+    <div class="text-danger" asp-validation-summary="All"></div>
+    <button type="submit" class="btn btn-primary">Giriş Yap</button>
+</form>

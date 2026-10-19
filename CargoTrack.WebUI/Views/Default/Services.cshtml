@@ -1,0 +1,77 @@
+@{
+    ViewData["Title"] = "Hizmetlerimiz";
+    Layout = "~/Views/UILayout/Index.cshtml";
+}
+
+<!-- Header -->
+<div class="text-center mb-stack-lg">
+    <h1 class="font-headline-xl text-headline-xl text-on-background mb-4">Hizmetlerimiz</h1>
+    <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">
+        İhtiyacınıza uygun teslimat tipini seçin; gönderiniz baştan sona izlenebilir ve güvende olsun.
+    </p>
+</div>
+
+<!-- Teslimat Tipleri -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-section-padding">
+    <div class="bg-white rounded-xl border border-outline-variant shadow-sm p-6 flex flex-col">
+        <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary mb-4">
+            <span class="material-symbols-outlined">local_shipping</span>
+        </div>
+        <h3 class="font-headline-md text-xl font-bold text-on-background mb-2">Standart Teslimat</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant flex-grow">Ekonomik fiyatlarla yurt içi gönderileriniz ortalama 2-4 iş günü içinde teslim edilir.</p>
+        <div class="mt-4 pt-4 border-t border-outline-variant text-sm text-on-surface-variant">En uygun fiyat</div>
+    </div>
+    <div class="bg-white rounded-xl border-2 border-secondary shadow-md p-6 flex flex-col relative">
+        <span class="absolute -top-3 right-5 bg-secondary-container text-on-secondary text-status-label font-status-label px-3 py-1 rounded-full">Popüler</span>
+        <div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary mb-4">
+            <span class="material-symbols-outlined">bolt</span>
+        </div>
+        <h3 class="font-headline-md text-xl font-bold text-on-background mb-2">Ekspres Teslimat</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant flex-grow">Acil gönderileriniz için 1-2 iş günü içinde hızlı teslimat çözümü.</p>
+        <div class="mt-4 pt-4 border-t border-outline-variant text-sm text-on-surface-variant">Hız & güven</div>
+    </div>
+    <div class="bg-white rounded-xl border border-outline-variant shadow-sm p-6 flex flex-col">
+        <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary mb-4">
+            <span class="material-symbols-outlined">schedule</span>
+        </div>
+        <h3 class="font-headline-md text-xl font-bold text-on-background mb-2">Aynı Gün Teslimat</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant flex-grow">Şehir içi gönderileriniz aynı gün içinde kapınıza ulaşır.</p>
+        <div class="mt-4 pt-4 border-t border-outline-variant text-sm text-on-surface-variant">Şehir içi</div>
+    </div>
+</div>
+
+<!-- Avantajlar -->
+<h2 class="font-headline-md text-headline-md text-on-background mb-stack-md text-center">Neden CargoTrack?</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-section-padding">
+    @{
+        var features = new (string Icon, string Title, string Desc)[]
+        {
+            ("travel_explore", "Canlı Takip", "Gönderinizi takip numarasıyla anlık olarak izleyin."),
+            ("calculate", "Desi Bazlı Fiyat", "Ücret; ağırlık, desi, mesafe ve teslimat tipine göre şeffaf hesaplanır."),
+            ("verified_user", "Teslimat Kodu", "Kargonuz yalnızca doğrulama kodu ile teslim edilir."),
+            ("schedule_send", "SLA Garantisi", "Tahmini teslim tarihi hesaplanır, gecikmeler raporlanır.")
+        };
+    }
+    @foreach (var f in features)
+    {
+        <div class="bg-surface-container-low rounded-xl p-6 border border-surface-container">
+            <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary-container mb-3">
+                <span class="material-symbols-outlined text-lg">@f.Icon</span>
+            </div>
+            <h3 class="font-headline-md text-base font-bold text-on-background mb-1">@f.Title</h3>
+            <p class="font-body-md text-sm text-on-surface-variant">@f.Desc</p>
+        </div>
+    }
+</div>
+
+<!-- Desi Bilgi Kutusu -->
+<div class="bg-primary-container rounded-xl shadow-sm p-8 text-on-primary flex flex-col md:flex-row items-center gap-6">
+    <span class="material-symbols-outlined text-[64px]">calculate</span>
+    <div class="flex-grow text-center md:text-left">
+        <h3 class="font-headline-md text-2xl font-bold mb-2">Desi Nasıl Hesaplanır?</h3>
+        <p class="text-primary-fixed-dim">Desi = (En × Boy × Yükseklik) / 3000. Ağırlık ve desiden büyük olanı ücretlendirmede esas alınır.</p>
+    </div>
+    <a href="/Default/Index#takip" class="bg-secondary-container text-on-secondary px-6 py-3 rounded-DEFAULT font-semibold whitespace-nowrap hover:bg-opacity-90 transition-colors">
+        Kargo Sorgula
+    </a>
+</div>

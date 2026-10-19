@@ -1,0 +1,88 @@
+@model UserDashboardDto
+
+<!-- Stat Cards -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-gutter mb-section-padding">
+    <div class="bg-white rounded-lg border border-outline-variant p-5">
+        <div class="text-on-surface-variant text-sm mb-1">Aktif Kargolarım</div>
+        <div class="font-headline-md text-headline-md text-primary">@Model.ActiveCargoCount</div>
+    </div>
+    <div class="bg-white rounded-lg border border-outline-variant p-5">
+        <div class="text-on-surface-variant text-sm mb-1">Geçmiş Teslimatlar</div>
+        <div class="font-headline-md text-headline-md text-primary">@Model.PastDeliveryCount</div>
+    </div>
+    <div class="bg-white rounded-lg border border-outline-variant p-5">
+        <div class="text-on-surface-variant text-sm mb-1">Gönderdiklerim</div>
+        <div class="font-headline-md text-headline-md text-primary">@Model.SentCargoCount</div>
+    </div>
+    <div class="bg-white rounded-lg border border-outline-variant p-5">
+        <div class="text-on-surface-variant text-sm mb-1">Aldıklarım</div>
+        <div class="font-headline-md text-headline-md text-primary">@Model.ReceivedCargoCount</div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+    <!-- Active Cargos -->
+    <div class="lg:col-span-7">
+        <div class="flex items-center justify-between mb-stack-md">
+            <h3 class="font-headline-md text-headline-md text-on-background">Aktif Kargolarım</h3>
+            <a href="/User/Cargo/Index" class="text-primary font-semibold text-sm hover:underline">Tümünü Gör</a>
+        </div>
+        <div class="flex flex-col gap-4">
+            @foreach (var c in Model.ActiveCargos)
+            {
+                <a href="/User/Cargo/Detail/@c.Id" class="bg-white rounded-lg border border-outline-variant p-5 flex justify-between items-center hover:shadow-sm transition-shadow border-l-4 border-l-surface-tint">
+                    <div>
+                        <div class="flex items-center gap-3 mb-1">
+                            <span class="font-body-md font-bold text-on-background">@c.TrackCode</span>
+                            <span class="bg-surface-container-high text-primary-container px-2 py-1 rounded-full font-status-label text-status-label">@c.CargoStatusName</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-on-surface-variant text-sm">
+                            <span>@c.OriginBranchName</span>
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            <span>@c.DestinationBranchName</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-on-surface-variant text-xs mb-1">Tahmini Teslimat</div>
+                        <div class="font-semibold text-on-background">@c.EstimatedArrivalDate.ToString("dd MMM yyyy")</div>
+                    </div>
+                </a>
+            }
+            @if (!Model.ActiveCargos.Any())
+            {
+                <div class="bg-white rounded-lg border border-outline-variant p-5 text-on-surface-variant">Aktif kargonuz bulunmuyor.</div>
+            }
+        </div>
+    </div>
+
+    <!-- Last Cargo -->
+    <div class="lg:col-span-5">
+        <h3 class="font-headline-md text-headline-md text-on-background mb-stack-md">Son Kargo Durumu</h3>
+        @if (Model.LastCargo != null)
+        {
+            <div class="bg-surface-container-low rounded-xl p-6 border border-surface-container">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="font-body-md font-bold text-on-background">@Model.LastCargo.TrackCode</span>
+                    <span class="bg-secondary-container text-on-primary px-3 py-1 rounded-full font-status-label text-status-label">@Model.LastCargo.CargoStatusName</span>
+                </div>
+                <div class="relative">
+                    @foreach (var m in Model.LastCargo.Movements)
+                    {
+                        <div class="flex gap-3 pb-4">
+                            <span class="material-symbols-outlined text-green-600 text-[18px]">check_circle</span>
+                            <div>
+                                <p class="font-semibold text-on-background text-sm">@m.NewStatusName</p>
+                                <p class="text-xs text-outline">@(m.LocationName ?? "-") • @m.MovementDate.ToString("dd MMM, HH:mm")</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <a href="/User/Cargo/Detail/@Model.LastCargo.Id" class="text-primary font-bold text-sm hover:underline">Detayları Gör</a>
+            </div>
+        }
+        else
+        {
+            <div class="bg-white rounded-lg border border-outline-variant p-5 text-on-surface-variant">Henüz kargo kaydınız yok.</div>
+        }
+    </div>
+</div>

@@ -1,0 +1,207 @@
+@using CargoTrack.Entity.Entities.Enums
+@model CargoDetailDto
+@{
+    ViewData["Title"] = "Kargo Detayı";
+
+    // Rota şehirlerini sıralı derle (ardışık tekrarları ele)
+    var routeCities = new List<string>();
+    void AddCity(string? c)
+    {
+        if (string.IsNullOrWhiteSpace(c)) return;
+        var t = c.Trim();
+        if (routeCities.Count == 0 || !routeCities[^1].Equals(t, StringComparison.OrdinalIgnoreCase))
+            routeCities.Add(t);
+    }
+    AddCity(Model.OriginCityName);
+    foreach (var mv in Model.Movements) AddCity(mv.City);
+    AddCity(Model.DestinationCityName);
+}
+
+<style>
+    .timeline-line::before {
+        content: '';
+        position: absolute;
+        left: 11px;
+        top: 24px;
+        bottom: -24px;
+        width: 2px;
+        background-color: #E2E8F0;
+        z-index: 0;
+    }
+    .timeline-item:last-child .timeline-line::before { display: none; }
+</style>
+
+<div class="flex justify-between items-end mb-8 gap-4">
+    <div>
+        <h1 class="font-headline-lg text-headline-lg text-primary-container mb-2">Gönderi Detayları</h1>
+        <p class="text-on-surface-variant font-body-md">Takip No: <span class="font-semibold">@Model.TrackCode</span></p>
+    </div>
+    <a href="/User/Cargo/Index" class="inline-flex items-center gap-2 bg-surface-container-high text-primary-container px-6 py-2.5 rounded-lg font-semibold hover:bg-opacity-90 transition-colors">
+        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+        Kargolarıma Dön
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="mb-6 flex items-center gap-2 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
+        <span class="material-symbols-outlined text-[20px]">check_circle</span>
+        @TempData["Success"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="mb-6 flex items-center gap-2 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
+        <span class="material-symbols-outlined text-[20px]">error</span>
+        @TempData["Error"]
+    </div>
+}
+
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div class="lg:col-span-8 flex flex-col gap-6">
+        <!-- Özet Kart -->
+        <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 p-6">
+            <div class="flex justify-between items-start mb-4">
+                <div class="inline-flex items-center gap-1.5 bg-surface-container-high text-primary-container px-3 py-1 rounded-full font-status-label text-status-label">
+                    <span class="material-symbols-outlined text-[16px]">local_shipping</span>
+                    @Model.CargoStatusName
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-outline">Ücret</p>
+                    <p class="font-headline-md text-xl text-primary-container">@Model.Price.ToString("N2") ₺</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-surface rounded-lg p-4"><p class="text-sm text-outline mb-1">Gönderici</p><p class="font-semibold">@Model.SenderFullName</p></div>
+                <div class="bg-surface rounded-lg p-4"><p class="text-sm text-outline mb-1">Alıcı</p><p class="font-semibold">@Model.ReceiverFullName</p></div>
+                <div class="bg-surface rounded-lg p-4"><p class="text-sm text-outline mb-1">Çıkış</p><p class="font-semibold">@Model.OriginCityName / @Model.OriginBranchName</p></div>
+                <div class="bg-surface rounded-lg p-4"><p class="text-sm text-outline mb-1">Varış</p><p class="font-semibold">@Model.DestinationCityName / @Model.DestinationBranchName</p></div>
+                <div class="bg-surface rounded-lg p-4"><p class="text-sm text-outline mb-1">Ağırlık</p><p class="font-semibold">@Model.Weight kg</p></div>
+                <div class="bg-surface rounded-lg p-4"><p class="text-sm text-outline mb-1">Desi</p><p class="font-semibold">@Model.Desi</p></div>
+                <div class="bg-surface rounded-lg p-4"><p class="text-sm text-outline mb-1">Gönderim</p><p class="font-semibold">@Model.ShipmentDate.ToString("dd MMM yyyy")</p></div>
+                <div class="bg-surface rounded-lg p-4"><p class="text-sm text-outline mb-1">Tahmini Teslimat</p><p class="font-semibold">@Model.EstimatedArrivalDate.ToString("dd MMM yyyy")</p></div>
+            </div>
+        </div>
+
+        <!-- Canlı Harita Takibi -->
+        <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 p-6">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-primary-container">map</span>
+                <h3 class="font-headline-md text-xl text-primary-container">Canlı Harita Takibi</h3>
+            </div>
+            <p class="text-sm text-outline mb-4">Gönderinizin güzergâhı ve güncel konumu harita üzerinde gösterilir.</p>
+            @await Html.PartialAsync("_CargoRouteMap", routeCities)
+            <div class="flex flex-wrap gap-4 mt-4 text-xs text-outline">
+                <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-gray-500 inline-block"></span> Çıkış</span>
+                <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-blue-600 inline-block"></span> Ara Durak</span>
+                <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-green-600 inline-block"></span> Güncel Konum</span>
+            </div>
+        </div>
+
+        <!-- Teslimat Seçenekleri (yalnızca dağıtıma çıkınca) -->
+        @if (Model.IsOutForDelivery)
+        {
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm border-2 border-primary-container/40 p-6">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-primary-container">move_to_inbox</span>
+                    <h3 class="font-headline-md text-xl text-primary-container">Kargonuz Teslimat İçin Yola Çıktı</h3>
+                </div>
+                @if (Model.DeliveryPreference != DeliveryPreference.None)
+                {
+                    <!-- Tercih zaten yapıldı: seçenekler tekrar gösterilmez -->
+                    <div class="flex items-start gap-2 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
+                        <span class="material-symbols-outlined text-[20px]">task_alt</span>
+                        <div>
+                            <p class="font-semibold">Mevcut tercihiniz: @Model.DeliveryPreferenceName</p>
+                            @if (Model.DeliveryPreference == DeliveryPreference.DeliverToNeighbor && !string.IsNullOrEmpty(Model.NeighborAddress))
+                            {
+                                <p class="text-sm">Komşu adresi: @Model.NeighborAddress</p>
+                            }
+                            @if (Model.DeliveryPreference == DeliveryPreference.Appointment && Model.AppointmentDate.HasValue)
+                            {
+                                <p class="text-sm">Randevu tarihi: @Model.AppointmentDate.Value.ToString("dd MMMM yyyy")</p>
+                            }
+                            <p class="text-xs mt-1 text-green-700">Teslimat tercihiniz alınmıştır.</p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-sm text-outline mb-5">Lütfen teslimat tercihinizi belirtin.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Adresteyim -->
+                        <form method="post" asp-area="User" asp-controller="Cargo" asp-action="AtAddress"
+                              class="bg-surface rounded-xl p-5 border border-outline-variant/30 flex flex-col items-center text-center hover:border-primary-container transition-colors">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <span class="material-symbols-outlined text-[36px] text-green-600 mb-2">home_pin</span>
+                            <p class="font-semibold mb-1">Adresteyim</p>
+                            <p class="text-xs text-outline mb-4">Adresinizde teslim almaya hazırsınız.</p>
+                            <button type="submit" class="mt-auto w-full bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors">Seç</button>
+                        </form>
+
+                        <!-- Komşuma teslim et -->
+                        <form method="post" asp-area="User" asp-controller="Cargo" asp-action="DeliverToNeighbor"
+                              class="bg-surface rounded-xl p-5 border border-outline-variant/30 flex flex-col items-center text-center hover:border-primary-container transition-colors">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <span class="material-symbols-outlined text-[36px] text-blue-600 mb-2">handshake</span>
+                            <p class="font-semibold mb-1">Komşuma Teslim Et</p>
+                            <p class="text-xs text-outline mb-3">Komşunuzun adresini yazın.</p>
+                            <input type="text" name="neighborAddress" required maxlength="250"
+                                   placeholder="Örn: A Blok No:5, Yılmaz ailesi"
+                                   class="w-full mb-3 px-3 py-2 rounded-lg border border-outline-variant/50 text-sm focus:outline-none focus:border-primary-container" />
+                            <button type="submit" class="mt-auto w-full bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Seç</button>
+                        </form>
+
+                        <!-- Başka bir güne randevu -->
+                        <form method="post" asp-area="User" asp-controller="Cargo" asp-action="CreateAppointment"
+                              class="bg-surface rounded-xl p-5 border border-outline-variant/30 flex flex-col items-center text-center hover:border-primary-container transition-colors">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <span class="material-symbols-outlined text-[36px] text-amber-600 mb-2">event</span>
+                            <p class="font-semibold mb-1">Başka Bir Güne Randevu</p>
+                            <p class="text-xs text-outline mb-3">Uygun teslimat tarihini seçin.</p>
+                            <input type="date" name="appointmentDate" required
+                                   min="@DateTime.Now.ToString("yyyy-MM-dd")"
+                                   class="w-full mb-3 px-3 py-2 rounded-lg border border-outline-variant/50 text-sm focus:outline-none focus:border-primary-container" />
+                            <button type="submit" class="mt-auto w-full bg-amber-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-amber-700 transition-colors">Oluştur</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Sağ: Zaman Çizelgesi -->
+    <div class="lg:col-span-4">
+        <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 p-6 h-full">
+            <div class="flex items-center gap-2 mb-6 pb-4 border-b border-outline-variant/30">
+                <span class="material-symbols-outlined text-primary-container">history</span>
+                <h3 class="font-headline-md text-xl text-primary-container">Kargo Hareketleri</h3>
+            </div>
+            <div class="relative">
+                @foreach (var m in Model.Movements)
+                {
+                    <div class="timeline-item relative pb-8 pl-10">
+                        <div class="timeline-line"></div>
+                        <div class="absolute left-0 top-0 w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center z-10 ring-4 ring-white">
+                            <span class="material-symbols-outlined text-[14px] font-bold">check</span>
+                        </div>
+                        <p class="font-semibold text-on-background mb-1">@m.NewStatusName</p>
+                        <div class="flex items-center gap-1 text-sm text-outline">
+                            <span class="material-symbols-outlined text-[16px]">location_on</span>
+                            @(m.DisplayLocation ?? "-") • @m.MovementDate.ToString("dd MMM, HH:mm")
+                        </div>
+                        @if (!string.IsNullOrEmpty(m.Description))
+                        {
+                            <p class="text-xs text-on-surface-variant mt-1">@m.Description</p>
+                        }
+                    </div>
+                }
+                @if (!Model.Movements.Any())
+                {
+                    <p class="text-sm text-outline">Henüz hareket kaydı bulunmuyor.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

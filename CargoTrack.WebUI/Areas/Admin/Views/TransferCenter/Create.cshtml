@@ -1,0 +1,25 @@
+@model CreateTransferCenterDto
+@{
+    ViewData["Title"] = "Yeni Transfer Merkezi";
+}
+
+<h3 class="mb-3">Yeni Transfer Merkezi</h3>
+
+<form method="post" style="max-width:480px">
+    <div class="mb-3">
+        <label class="form-label">Ad</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Şehir</label>
+        <select asp-for="CityId" class="form-select" asp-items="@ViewBag.Cities">
+            <option value="">-- Şehir Seçiniz --</option>
+        </select>
+        <span asp-validation-for="CityId" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-dark">Kaydet</button>
+    <a href="/Admin/TransferCenter/Index" class="btn btn-secondary">Vazgeç</a>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

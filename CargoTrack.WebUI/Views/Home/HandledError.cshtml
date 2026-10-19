@@ -1,0 +1,13 @@
+@{
+    ViewData["Title"] = "İşlem Hatası";
+    var message = ViewBag.Message as string ?? "Beklenmeyen bir doğrulama hatası oluştu.";
+}
+
+<div class="text-center py-5">
+    <h1 class="display-5 text-warning">Bir sorun oluştu</h1>
+    <div class="alert alert-warning d-inline-block mt-3">@message</div>
+    <div class="mt-4">
+        <a href="javascript:history.back()" class="btn btn-secondary">Geri Dön</a>
+        <a href="/" class="btn btn-dark">Ana Sayfa</a>
+    </div>
+</div>

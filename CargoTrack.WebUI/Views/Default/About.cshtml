@@ -1,0 +1,86 @@
+@using CargoTrack.DTO.DTOs.AboutDtos
+@model List<ResultAboutDto>
+@{
+    ViewData["Title"] = "Hakkımızda";
+    Layout = "~/Views/UILayout/Index.cshtml";
+    var items = Model.Take(6).ToList();
+}
+
+<!-- Hero -->
+<div class="bg-primary-container rounded-xl shadow-sm p-10 text-on-primary mb-section-padding relative overflow-hidden">
+    <div class="absolute -right-10 -top-10 opacity-10 pointer-events-none">
+        <span class="material-symbols-outlined text-[220px]">package_2</span>
+    </div>
+    <div class="relative z-10 max-w-2xl">
+        <h1 class="font-headline-xl text-headline-xl mb-4">Hakkımızda</h1>
+        <p class="font-body-lg text-body-lg text-primary-fixed-dim">
+            CargoTrack olarak; güvenilir, izlenebilir ve hızlı kargo operasyonlarıyla gönderilerinizi
+            baştan sona kontrol altında tutuyoruz. Teknoloji odaklı altyapımızla her adımı şeffaf kılıyoruz.
+        </p>
+    </div>
+</div>
+
+<!-- Misyon / Vizyon / Değerler -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-section-padding">
+    <div class="bg-white rounded-xl border border-outline-variant shadow-sm p-6">
+        <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary mb-4">
+            <span class="material-symbols-outlined">flag</span>
+        </div>
+        <h3 class="font-headline-md text-xl font-bold text-on-background mb-2">Misyonumuz</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant">Her gönderiyi zamanında, güvenle ve tam izlenebilirlikle teslim etmek.</p>
+    </div>
+    <div class="bg-white rounded-xl border border-outline-variant shadow-sm p-6">
+        <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary mb-4">
+            <span class="material-symbols-outlined">visibility</span>
+        </div>
+        <h3 class="font-headline-md text-xl font-bold text-on-background mb-2">Vizyonumuz</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant">Türkiye'nin en çok güvenilen, teknoloji odaklı lojistik markası olmak.</p>
+    </div>
+    <div class="bg-white rounded-xl border border-outline-variant shadow-sm p-6">
+        <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary mb-4">
+            <span class="material-symbols-outlined">handshake</span>
+        </div>
+        <h3 class="font-headline-md text-xl font-bold text-on-background mb-2">Değerlerimiz</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant">Şeffaflık, güven, müşteri memnuniyeti ve sürekli gelişim.</p>
+    </div>
+</div>
+
+<!-- İstatistik Şeridi -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-gutter mb-section-padding text-center">
+    <div class="bg-surface-container-low rounded-xl p-6 border border-surface-container">
+        <div class="font-headline-xl text-3xl font-bold text-primary">250+</div>
+        <div class="text-on-surface-variant text-sm mt-1">Şube</div>
+    </div>
+    <div class="bg-surface-container-low rounded-xl p-6 border border-surface-container">
+        <div class="font-headline-xl text-3xl font-bold text-primary">81</div>
+        <div class="text-on-surface-variant text-sm mt-1">İl</div>
+    </div>
+    <div class="bg-surface-container-low rounded-xl p-6 border border-surface-container">
+        <div class="font-headline-xl text-3xl font-bold text-primary">7/24</div>
+        <div class="text-on-surface-variant text-sm mt-1">Takip</div>
+    </div>
+    <div class="bg-surface-container-low rounded-xl p-6 border border-surface-container">
+        <div class="font-headline-xl text-3xl font-bold text-primary">%98</div>
+        <div class="text-on-surface-variant text-sm mt-1">Zamanında Teslimat</div>
+    </div>
+</div>
+
+@if (items.Any())
+{
+    <h2 class="font-headline-md text-headline-md text-on-background mb-stack-md text-center">Kurumsal</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+        @foreach (var about in items)
+        {
+            <div class="bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col">
+                @if (!string.IsNullOrWhiteSpace(about.ImageUrl))
+                {
+                    <img src="@about.ImageUrl" alt="@about.Title" class="w-full h-40 object-cover bg-surface-container" />
+                }
+                <div class="p-5 flex flex-col flex-grow">
+                    <h3 class="font-headline-md text-lg font-bold text-on-background mb-2">@about.Title</h3>
+                    <p class="font-body-md text-body-md text-on-surface-variant flex-grow">@about.Description</p>
+                </div>
+            </div>
+        }
+    </div>
+}

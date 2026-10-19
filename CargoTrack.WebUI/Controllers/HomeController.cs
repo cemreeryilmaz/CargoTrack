@@ -15,11 +15,24 @@ namespace CargoTrack.WebUI.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Default");
         }
 
         public IActionResult Privacy()
         {
+            return View();
+        }
+
+        // Yetkisiz erişim ekranı
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        // İş kuralı (ValidationException) kaynaklı yakalanan hatalar
+        public IActionResult HandledError(string? message)
+        {
+            ViewBag.Message = message ?? "Beklenmeyen bir hata oluştu.";
             return View();
         }
 

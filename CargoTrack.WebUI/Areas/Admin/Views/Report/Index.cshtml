@@ -1,0 +1,94 @@
+@model PerformanceReportDto
+@{
+    ViewData["Title"] = "Performans Raporları";
+}
+
+<h3 class="mb-3">Performans Raporları</h3>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card text-bg-primary shadow-sm"><div class="card-body">
+            <h6>Ortalama Teslimat Süresi</h6>
+            <h3 class="mb-0">@Model.AverageDeliveryDurationDays gün</h3>
+        </div></div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-bg-success shadow-sm"><div class="card-body">
+            <h6>Zamanında Teslimat Oranı</h6>
+            <h3 class="mb-0">%@Model.OnTimeDeliveryRate</h3>
+        </div></div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-bg-warning shadow-sm"><div class="card-body">
+            <h6>İade Oranı</h6>
+            <h3 class="mb-0">%@Model.ReturnRate</h3>
+        </div></div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm"><div class="card-body">
+            <h6 class="text-muted">En Çok Gönderen Şube</h6>
+            <h5>@(Model.TopSenderBranch?.BranchName ?? "-")</h5>
+            <span class="text-muted">@(Model.TopSenderBranch?.SentCargoCount ?? 0) kargo</span>
+        </div></div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm"><div class="card-body">
+            <h6 class="text-muted">En Çok Teslimat Yapan Şube</h6>
+            <h5>@(Model.TopDelivererBranch?.BranchName ?? "-")</h5>
+            <span class="text-muted">@(Model.TopDelivererBranch?.DeliveredCargoCount ?? 0) teslimat</span>
+        </div></div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm"><div class="card-body">
+            <h6 class="text-muted">En Çok Geciken Şube</h6>
+            <h5>@(Model.MostDelayedBranch?.BranchName ?? "-")</h5>
+            <span class="text-muted">@(Model.MostDelayedBranch?.DelayedCargoCount ?? 0) geciken</span>
+        </div></div>
+    </div>
+</div>
+
+<h5>Şube Performansları</h5>
+<table class="table table-bordered table-hover mb-4">
+    <thead class="table-light">
+        <tr><th>Şube</th><th>Şehir</th><th>Gönderilen</th><th>Teslim Edilen</th><th>Geciken</th><th>Başarı Oranı</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var b in Model.BranchPerformances)
+        {
+            <tr>
+                <td>@b.BranchName</td>
+                <td>@b.CityName</td>
+                <td>@b.SentCargoCount</td>
+                <td>@b.DeliveredCargoCount</td>
+                <td>@b.DelayedCargoCount</td>
+                <td>%@b.DeliverySuccessRate</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h5>Personel Performansları</h5>
+<table class="table table-bordered table-hover">
+    <thead class="table-light">
+        <tr><th>Personel</th><th>Şube</th><th>Teslimat</th><th>Başarısız Teslimat</th><th>Toplam İşlem</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var e in Model.EmployeePerformances)
+        {
+            <tr>
+                <td>@e.EmployeeName</td>
+                <td>@e.BranchName</td>
+                <td>@e.DeliveryCount</td>
+                <td>@e.FailedDeliveryCount</td>
+                <td>@e.MovementCount</td>
+            </tr>
+        }
+        @if (!Model.EmployeePerformances.Any())
+        {
+            <tr><td colspan="5" class="text-center text-muted">Personel kaydı bulunamadı.</td></tr>
+        }
+    </tbody>
+</table>
